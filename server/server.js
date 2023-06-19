@@ -1,22 +1,25 @@
 const express = require("express");
-const path = require("path");
-const server = express();
-const port = 8000
-server.use(express.static("clientside"));
-console.log(__dirname)
+const path = require("path")
+const http = require("http");
+const app = express();
+const server = http.createServer(app);
+const port = 3000;
+const { Server } = require("socket.io");
 
-server.get("/", (req, res) => {
-    res.sendFile(path.resolve(__dirname + "/../clientside/index.html"))
+
+const io = new Server(server);
+
+
+
+
+app.get("/" , (req, res) => {
+    res.sendFile(path.resolve(__dirname + '/../clientside/index.html'));
 })
 
+io.on('connection', (socket) => {
+    console.log('a user connected');
+});
 
-server.listen(port, () => { 
-    console.log(`Server is now listening on port ${port}`);
+server.listen(port, () => {
+    console.log(`Now listning too port ${port}`);
 })
-
-/*
-    TO-DO:
-    1. Kolla varför och hur express.static("path") funkar är rooten för hemsidan respot?
-    2. Förstå varför path.resolve fixade forrbiden erroret (testa ta bort så får du se erroret)
-
-*/
